@@ -22,11 +22,3 @@ with konektorius:
     kursorius.execute("SELECT * FROM automobiliai WHERE marke = ? AND modelis = ? AND spalva= ?"
                       "AND pagaminimo_metai BETWEEN ? AND ? AND kaina BETWEEN ? AND ?", paieska)
     print(kursorius.fetchall())
-
-# while True:
-#     paieska = int(input("""Įveskite paieškos kriterijus:
-# 1 - Įveskite automobilio markę
-#
-# """))
-
-
