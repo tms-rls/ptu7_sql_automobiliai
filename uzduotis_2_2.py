@@ -21,4 +21,9 @@ paieska = (marke_paieska, modelis_paieska, spalva_paieska, metai_nuo, metai_iki,
 with konektorius:
     kursorius.execute("SELECT * FROM automobiliai WHERE marke = ? AND modelis = ? AND spalva= ?"
                       "AND pagaminimo_metai BETWEEN ? AND ? AND kaina BETWEEN ? AND ?", paieska)
-    print(kursorius.fetchall())
+    rezultatas = kursorius.fetchall()
+
+if rezultatas:
+    print(rezultatas)
+else:
+    print("Nėra automobilių pagal Jūsų kriterijus!")
