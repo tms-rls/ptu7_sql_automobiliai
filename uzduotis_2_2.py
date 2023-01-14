@@ -47,28 +47,29 @@ spalva_paieska = str(input("Įveskite automobilio spalvą: "))
 if marke_paieska == '':
     s1 = ''
 elif marke_paieska != '' and modelis_paieska == '' and spalva_paieska == '':
-    s1 = "marke = ?"
+    s1 = "marke = ? COLLATE NOCASE"
     paieska.append(marke_paieska)
 else:
-    s1 = "marke = ? AND"
+    s1 = "marke = ? COLLATE NOCASE AND"
     paieska.append(marke_paieska)
 
 
 if modelis_paieska == '':
     s2 = ''
 elif modelis_paieska != '' and spalva_paieska == '':
-    s2 = "modelis = ?"
+    s2 = "modelis = ? COLLATE NOCASE"
     paieska.append(modelis_paieska)
 else:
-    s2 = "modelis = ? AND"
+    s2 = "modelis = ? COLLATE NOCASE AND"
     paieska.append(modelis_paieska)
 
 
 if spalva_paieska == '':
     s3 = ''
 else:
-    s3 = "spalva = ?"
+    s3 = "spalva = ? COLLATE NOCASE"
     paieska.append(spalva_paieska)
+
 
 # metai_nuo = input("Įveskite automobilio pagaminimo metus nuo: ")
 # metai_iki = input("Įveskite automobilio pagaminimo metus iki: ")
@@ -76,13 +77,14 @@ else:
 # kaina_iki = input("Įveskite automobilio kainą iki: ")
 
 
-uzklausa = f"SELECT * FROM automobiliai WHERE {s1} {s2} {s3} COLLATE NOCASE"
+uzklausa = f"SELECT * FROM automobiliai WHERE {s1} {s2} {s3}"
 
 print(uzklausa)
 print(paieska)
 
 with konektorius:
     kursorius.execute(uzklausa, paieska)
+    rezultatai = kursorius.fetchall()
 
 
 
@@ -90,7 +92,7 @@ with konektorius:
 # with konektorius:
 #     kursorius.execute("SELECT * FROM automobiliai WHERE marke = ? OR modelis = ? OR spalva = ?"
 #                       "OR pagaminimo_metai BETWEEN ? AND ? OR kaina BETWEEN ? AND ? COLLATE NOCASE", paieska)
-    rezultatai = kursorius.fetchall()
+#     rezultatai = kursorius.fetchall()
 
 if rezultatai:
     for rezultatas in rezultatai:
