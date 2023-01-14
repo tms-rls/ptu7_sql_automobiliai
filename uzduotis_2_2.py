@@ -8,91 +8,89 @@ import sqlite3
 konektorius = sqlite3.connect("uzduotis_20230112_1.db")
 kursorius = konektorius.cursor()
 
-
-# def rezultatai():
-#     paieskos_rezultatai = kursorius.fetchall()
-#     if paieskos_rezultatai:
-#         for rezultatas in paieskos_rezultatai:
-#             print(rezultatas)
-#     else:
-#         print("Nėra automobilių pagal Jūsų kriterijus!")
-#
-#
-# while True:
-#     paieska = int(input("""Pasirinkite paieškos kriterijus:
-# 1 - Ieškoti pagal automobilio markę
-# 2 - Ieškoti pagal automobilio modelį
-# 3 - Ieškoti pagal automobilio spalvą
-# 4 - Ieškoti pagal automobilio pagaminimo metus
-# 5 - Ieškoti pagal automobilio kainą
-# 6 - Išeiti iš programos
-# """))
-#     if paieska == 1:
-#         marke_paieska = input("Įveskite automobilio markę: ")
-#         with konektorius:
-#             kursorius.execute("SELECT * FROM automobiliai WHERE marke = ? COLLATE NOCASE", (marke_paieska,))
-#             rezultatai()
-#     if paieska == 2:
-#         modelis_paieska = input("Įveskite automobilio modelį: ")
-#         with konektorius:
-#             kursorius.execute("SELECT * FROM automobiliai WHERE modelis = ? COLLATE NOCASE", (modelis_paieska,))
-#             rezultatai()
-
 paieska = []
 
-marke_paieska = str(input("Įveskite automobilio markę: "))
-modelis_paieska = str(input("Įveskite automobilio modelį: "))
-spalva_paieska = str(input("Įveskite automobilio spalvą: "))
+marke_paieska = input("Įveskite automobilio markę: ")
+modelis_paieska = input("Įveskite automobilio modelį: ")
+spalva_paieska = input("Įveskite automobilio spalvą: ")
+metai_nuo_paieska = input("Įveskite automobilio pagaminimo metus 'Nuo': ")
+metai_iki_paieska = input("Įveskite automobilio pagaminimo metus 'Iki': ")
+kaina_nuo_paieska = input("Įveskite automobilio kainą 'Nuo': ")
+kaina_iki_paieska = input("Įveskite automobilio kainą 'Iki': ")
 
 if marke_paieska == '':
-    s1 = ''
-elif marke_paieska != '' and modelis_paieska == '' and spalva_paieska == '':
-    s1 = "marke = ? COLLATE NOCASE"
+    uzklausa1 = ''
+elif marke_paieska != '' and modelis_paieska == '' and spalva_paieska == '' and metai_nuo_paieska == ''\
+        and metai_iki_paieska == '' and kaina_nuo_paieska == '' and kaina_iki_paieska == '':
+    uzklausa1 = " marke = ? COLLATE NOCASE"
     paieska.append(marke_paieska)
 else:
-    s1 = "marke = ? COLLATE NOCASE AND"
+    uzklausa1 = " marke = ? COLLATE NOCASE AND"
     paieska.append(marke_paieska)
-
 
 if modelis_paieska == '':
-    s2 = ''
-elif modelis_paieska != '' and spalva_paieska == '':
-    s2 = "modelis = ? COLLATE NOCASE"
+    uzklausa2 = ''
+elif modelis_paieska != '' and spalva_paieska == '' and metai_nuo_paieska == '' and metai_iki_paieska == ''\
+        and kaina_nuo_paieska == '' and kaina_iki_paieska == '':
+    uzklausa2 = " modelis = ? COLLATE NOCASE"
     paieska.append(modelis_paieska)
 else:
-    s2 = "modelis = ? COLLATE NOCASE AND"
+    uzklausa2 = " modelis = ? COLLATE NOCASE AND"
     paieska.append(modelis_paieska)
-
 
 if spalva_paieska == '':
-    s3 = ''
+    uzklausa3 = ''
+elif spalva_paieska != '' and metai_nuo_paieska == '' and metai_iki_paieska == ''\
+        and kaina_nuo_paieska == '' and kaina_iki_paieska == '':
+    uzklausa3 = " modelis = ? COLLATE NOCASE"
+    paieska.append(spalva_paieska)
 else:
-    s3 = "spalva = ? COLLATE NOCASE"
+    uzklausa3 = " spalva = ? COLLATE NOCASE AND"
     paieska.append(spalva_paieska)
 
+if metai_nuo_paieska == '':
+    uzklausa4 = ''
+elif metai_nuo_paieska != '' and metai_iki_paieska == '' and kaina_nuo_paieska == '' and kaina_iki_paieska == '':
+    uzklausa4 = " pagaminimo_metai >= ?"
+    paieska.append(metai_nuo_paieska)
+else:
+    uzklausa4 = " pagaminimo_metai >= ? AND"
+    paieska.append(metai_nuo_paieska)
 
-# metai_nuo = input("Įveskite automobilio pagaminimo metus nuo: ")
-# metai_iki = input("Įveskite automobilio pagaminimo metus iki: ")
-# kaina_nuo = input("Įveskite automobilio kainą nuo: ")
-# kaina_iki = input("Įveskite automobilio kainą iki: ")
+if metai_iki_paieska == '':
+    uzklausa5 = ''
+elif metai_iki_paieska != '' and kaina_nuo_paieska == '' and kaina_iki_paieska == '':
+    uzklausa5 = " pagaminimo_metai <= ?"
+    paieska.append(metai_iki_paieska)
+else:
+    uzklausa5 = " pagaminimo_metai <= ? AND"
+    paieska.append(metai_iki_paieska)
 
+if kaina_nuo_paieska == '':
+    uzklausa6 = ''
+elif kaina_nuo_paieska != '' and kaina_iki_paieska == '':
+    uzklausa6 = " kaina <= ?"
+    paieska.append(kaina_nuo_paieska)
+else:
+    uzklausa6 = " kaina >= ? AND"
+    paieska.append(kaina_nuo_paieska)
 
-uzklausa = f"SELECT * FROM automobiliai WHERE {s1} {s2} {s3}"
+if kaina_iki_paieska == '':
+    uzklausa7 = ''
+else:
+    uzklausa7 = " kaina <= ?"
+    paieska.append(kaina_iki_paieska)
 
-print(uzklausa)
-print(paieska)
+if marke_paieska == '' and modelis_paieska == '' and spalva_paieska == '' and metai_nuo_paieska == ''\
+    and metai_iki_paieska == '' and kaina_nuo_paieska == '' and kaina_iki_paieska == '':
+    uzklausa = f"SELECT * FROM automobiliai"
+else:
+    uzklausa = f"SELECT * FROM automobiliai " \
+               f"WHERE{uzklausa1}{uzklausa2}{uzklausa3}{uzklausa4}{uzklausa5}{uzklausa6}{uzklausa7}"
 
 with konektorius:
     kursorius.execute(uzklausa, paieska)
     rezultatai = kursorius.fetchall()
-
-
-
-#
-# with konektorius:
-#     kursorius.execute("SELECT * FROM automobiliai WHERE marke = ? OR modelis = ? OR spalva = ?"
-#                       "OR pagaminimo_metai BETWEEN ? AND ? OR kaina BETWEEN ? AND ? COLLATE NOCASE", paieska)
-#     rezultatai = kursorius.fetchall()
 
 if rezultatai:
     for rezultatas in rezultatai:
